@@ -25,12 +25,13 @@ $( document ).ready(function() {
   let render = () => {
     let textString = '';
     arrOfItems.forEach(item => {
-      textString = `<li id="${item.idOfItem}" >
-        <input type="checkbox" class="toDoDone">
+      textString += `<li id="${item.idOfItem}" >
+        <input type="checkbox" class="toDoDone" ${ item.copmleted ? 'checked' : ''}>
         <span class='${ item.copmleted ? 'completed' : ''}' >${item.textOfItem}</span>
     </li>`
     })
-    $('#listToDo').append(textString)
+    $('#listToDo').html(textString)
+    checkBoxFunction()
   }
 
   $(document).on('change','.toDoDone', function() {
@@ -43,8 +44,26 @@ $( document ).ready(function() {
     render()
   })
 
+  $("#select-all").on('change', function(){
+  arrOfItems.forEach(item => {
+    if($('#select-all').prop("checked") == true){
+      item.copmleted = true
+    }
+    else if($('#select-all').prop("checked") == false){
+      item.copmleted = false
+    }
+  })
+    render()
+  });
 
-
+  let checkBoxFunction = () => {
+    if (arrOfItems.length != 0 && arrOfItems.every(item => item.copmleted)) {
+      $('#select-all').prop('checked', true)
+      return
+    }
+    else { $('#select-all').prop('checked', false)
+    }
+  }
 
 
 
