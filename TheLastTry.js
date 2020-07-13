@@ -1,6 +1,7 @@
 $( document ).ready(function() {
 
-  let arrOfItems = []
+  let arrOfItems = [];
+  let currentTab = 'all';
   const enterCode = 13
 
    $('#add-btn').on('click', function () {
@@ -34,10 +35,54 @@ $( document ).ready(function() {
       render()
     }
   })
+  const activeTab = function(str) {
+    currentTab = str;
+    render();
+  };
+  const competeTodo = function() {
+    activeTab('completed');
+  };
+  const activeTodo = function() {
+    activeTab('active');
+  };
+  const allTodo = function() {
+    activeTab('all');
+  };
+
+  $('#tab-all').on('click', () => {
+    allTodo();
+  });
+  $('#tab-active').on('click', () => {
+    activeTodo();
+  });
+  $('#tab-completed').on('click', () => {
+    competeTodo();
+  });
+
+  const todoTab = () => {
+    let currentList = [];
+
+
+    switch (currentTab) {
+      case 'active':
+        currentList = arrOfItems.filter(item => item.copmleted === false);
+        break;
+      case 'completed':
+        currentList = arrOfItems.filter(item => item.copmleted === true);
+        break;
+      default:
+        currentList = arrOfItems;
+        break;
+    }
+
+    return currentList;
+  };
+  
 
   let render = () => {
+    let currentList = todoTab();
     let textString = '';
-    arrOfItems.forEach(item => {
+    currentList.forEach(item => {
       textString += `<li id="${item.idOfItem}" >
         <input type="checkbox" class="toDoDone" ${ item.copmleted ? 'checked' : ''}>
         <span class='${ item.copmleted ? 'completed' : ''}' >${ item.onEdit ? '<input type="text" class="new-value">' : item.textOfItem}</span>
@@ -75,7 +120,6 @@ $( document ).ready(function() {
         item.copmleted = !item.copmleted
       }
     })
-    odin()
     render()
   })
 
@@ -111,6 +155,10 @@ $( document ).ready(function() {
       render()
     })
 
+    let uncheckedItemsCount = () => arrOfItems.filter(item => item.copmleted == false).length
+    let сheckedItemsCount = () => arrOfItems.filter(item => item.copmleted == true).length
+    let allItemsCount = () => arrOfItems.length
+
     $(document).on('click', '.edit-btn' , function () {
       let editItem = $(this).parent().attr('id')
       arrOfItems.forEach(item => {
@@ -135,63 +183,6 @@ $( document ).ready(function() {
     })
     render()
   })
-
-  let uncheckedItemsCount = () => arrOfItems.filter(item => item.copmleted == false).length
-  let сheckedItemsCount = () => arrOfItems.filter(item => item.copmleted == true).length
-  let allItemsCount = () => arrOfItems.length
-
-  let arrOfCheckedTabs = [];
-  $('a[href="#tab-1"]').on('click', function () {
-    arrOfCheckedTabs = [];
-    arrOfCheckedTabs = arrOfItems.filter(item => item.copmleted ==true)
-      console.log(arrOfCheckedTabs)
-    let textString = '';
-    arrOfCheckedTabs.forEach(item => {
-      textString += `<li id="${item.idOfItem}" >
-        <input type="checkbox" class="toDoDone" ${ item.copmleted ? 'checked' : ''}>
-        <span class='${ item.copmleted ? 'completed' : ''}' >${ item.onEdit ? '<input type="text" class="new-value">' : item.textOfItem}</span>
-        ${ item.onEdit ? '<input type="button" value="Сохранить изменения" class="save-changes">' : '<input type="button" class="edit-btn" value="Редактировать">'}
-        <input type="button" class="delete-btn" value="Удалить">
-    </li>`})
-    $('#listToDo').html(textString)
-  })
-
-
-  let arrOfUncheckedTabs = [];
-  let odin = () => {$('a[href="#tab-2"]').on('click', function () {
-    arrOfUncheckedTabs = [];
-    arrOfUncheckedTabs = arrOfItems.filter(item => item.copmleted ==false)
-      //$('.tab-2').append(arrOfTab2) // должно аппендить внутрь а не рядом
-    console.log(arrOfUncheckedTabs)
-    let textString = '';
-    arrOfUncheckedTabs.forEach(item => {
-      textString += `<li id="${item.idOfItem}" >
-        <input type="checkbox" class="toDoDone" ${ item.copmleted ? 'checked' : ''}>
-        <span class='${ item.copmleted ? 'completed' : ''}' >${ item.onEdit ? '<input type="text" class="new-value">' : item.textOfItem}</span>
-        ${ item.onEdit ? '<input type="button" value="Сохранить изменения" class="save-changes">' : '<input type="button" class="edit-btn" value="Редактировать">'}
-        <input type="button" class="delete-btn" value="Удалить">
-    </li>`})
-    $('#listToDo').html(textString)
-    })}
-
-
-  let arrOfAllTabs = [];
-  $('a[href="#tab-3"]').on('click', function () {
-    render()
-
-  })
-
-  // $('a[href="#tab-3"]').on('click', function (){
-  //   $('#listToDo').hide()
-  // })
-
-
-
-
-
-
-
-
 
 
   }); // refers to document.ready
