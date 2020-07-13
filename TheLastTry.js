@@ -8,7 +8,10 @@ $( document ).ready(function() {
       textOfItem: $('#text-field').val().trim() ,
       idOfItem: Math.random(),
       copmleted: false,
-      onEdit: false
+      onEdit: false,
+      tab3: true,
+      tab2: false,
+      tab2: false
     }
     arrOfItems.forEach(item => item.onEdit = false)
     arrOfItems.push(itemList)
@@ -72,6 +75,7 @@ $( document ).ready(function() {
         item.copmleted = !item.copmleted
       }
     })
+    odin()
     render()
   })
 
@@ -136,6 +140,50 @@ $( document ).ready(function() {
   let сheckedItemsCount = () => arrOfItems.filter(item => item.copmleted == true).length
   let allItemsCount = () => arrOfItems.length
 
+  let arrOfCheckedTabs = [];
+  $('a[href="#tab-1"]').on('click', function () {
+    arrOfCheckedTabs = [];
+    arrOfCheckedTabs = arrOfItems.filter(item => item.copmleted ==true)
+      console.log(arrOfCheckedTabs)
+    let textString = '';
+    arrOfCheckedTabs.forEach(item => {
+      textString += `<li id="${item.idOfItem}" >
+        <input type="checkbox" class="toDoDone" ${ item.copmleted ? 'checked' : ''}>
+        <span class='${ item.copmleted ? 'completed' : ''}' >${ item.onEdit ? '<input type="text" class="new-value">' : item.textOfItem}</span>
+        ${ item.onEdit ? '<input type="button" value="Сохранить изменения" class="save-changes">' : '<input type="button" class="edit-btn" value="Редактировать">'}
+        <input type="button" class="delete-btn" value="Удалить">
+    </li>`})
+    $('#listToDo').html(textString)
+  })
+
+
+  let arrOfUncheckedTabs = [];
+  let odin = () => {$('a[href="#tab-2"]').on('click', function () {
+    arrOfUncheckedTabs = [];
+    arrOfUncheckedTabs = arrOfItems.filter(item => item.copmleted ==false)
+      //$('.tab-2').append(arrOfTab2) // должно аппендить внутрь а не рядом
+    console.log(arrOfUncheckedTabs)
+    let textString = '';
+    arrOfUncheckedTabs.forEach(item => {
+      textString += `<li id="${item.idOfItem}" >
+        <input type="checkbox" class="toDoDone" ${ item.copmleted ? 'checked' : ''}>
+        <span class='${ item.copmleted ? 'completed' : ''}' >${ item.onEdit ? '<input type="text" class="new-value">' : item.textOfItem}</span>
+        ${ item.onEdit ? '<input type="button" value="Сохранить изменения" class="save-changes">' : '<input type="button" class="edit-btn" value="Редактировать">'}
+        <input type="button" class="delete-btn" value="Удалить">
+    </li>`})
+    $('#listToDo').html(textString)
+    })}
+
+
+  let arrOfAllTabs = [];
+  $('a[href="#tab-3"]').on('click', function () {
+    render()
+
+  })
+
+  // $('a[href="#tab-3"]').on('click', function (){
+  //   $('#listToDo').hide()
+  // })
 
 
 
@@ -146,9 +194,4 @@ $( document ).ready(function() {
 
 
 
-
-
-
-
-
-}); // refers to document.ready
+  }); // refers to document.ready
