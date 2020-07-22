@@ -19,9 +19,6 @@ $( document ).ready(function() {
     render()
   })
 
-$('#show-all').on('click', function () {
-  $('#all').append(arrOfItems.length)
-})
 
   $('#text-field').on('keydown',function(event) {
     if( Number(event.keyCode) === Number(enterCode)) {
@@ -269,17 +266,19 @@ $('#show-all').on('click', function () {
 
   let pagesFunction = () => {
     let numberOfItems = arrOfItems.length;
-    let limitPerPage = 6;
-    let totalPages = Math.round(numberOfItems / limitPerPage)
-    let delitel = numberOfItems % limitPerPage
-    if (numberOfItems == limitPerPage ) {
-      $("#pages").append("<li class='current-page '><a href='#'>" + 1 + "</a></li>")
-    }
-
-    else if (delitel === 0) {
-      for (let i=totalPages; i <= totalPages; i++){
-        $("#pages").append("<li class='current-page'><a href='#'>" + i + "</a></li>");
+    let limitPerPage = 5;
+    let totalPages = Math.ceil(numberOfItems / limitPerPage);
+    let delitel = numberOfItems % limitPerPage;
+    // if (numberOfItems === limitPerPage + 1) {
+    //   //$("#pages").append("<li class='current-page '><a href='#'>" + 1 + "</a></li>")
+    // }
+      console.log('delitel' ,delitel)
+     if ( totalPages % limitPerPage === 0) {
+       let emptyString = ''
+      for (let i=1; i < totalPages+1; i++){
+        emptyString += `<li class='current-page'><a href='#'> ${i} </a></li>`
       }
+       $("#pages").append(emptyString);
     }
 
     $(document).on('click', '.current-page', function () {
@@ -289,8 +288,11 @@ $('#show-all').on('click', function () {
       if ($(this).hasClass('active')){
         let numOfPage = $(this).text()
         $("#listToDo li").hide()
-        let firstElementIndex = numOfPage * (limitPerPage - 1) - (limitPerPage - 1)
-        for (let i = firstElementIndex; i < (numOfPage * (limitPerPage - 1)); i++ ) {
+        let firstElementIndex = numOfPage === 1 ? numOfPage * (limitPerPage - 1) - (limitPerPage - 1) : numOfPage * limitPerPage  - limitPerPage;
+        console.log(firstElementIndex)
+        //let firstElementIndex = numOfPage * (limitPerPage - 1) - (limitPerPage - 1)
+        //let firstElementIndex = numOfPage * limitPerPage  - limitPerPage
+        for (let i = firstElementIndex; i <= (numOfPage * limitPerPage - 1); i++ ) {
           $('#listToDo li:eq(' + i + ')').show()
         }
       }
