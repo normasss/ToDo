@@ -34,7 +34,7 @@ $( document ).ready(function() {
       $('#text-field').val('')
       render()
       pagesFunction()
-
+      focusOnNewPage()
     }
   })
 
@@ -262,17 +262,25 @@ $( document ).ready(function() {
   //   $(this).addClass('active')
   // })
 
-
+  let limitPerPage = 5;
   let pagesFunction = () => {
+
     let numberOfItems = currentList.length;
-    let limitPerPage = 5;
     let totalPages = Math.ceil(numberOfItems / limitPerPage);
     let delitel = numberOfItems % limitPerPage;
 
     $("#pages").html('');
     for (let i = 1; i < totalPages + 1; i++) {
       let el = `<li class='current-page '><a href='#'> ${i} </a></li>`
-      $("#pages").append(el);
+      $("#pages").append(el).addClass('active')
+      if ($('#pages').hasClass('active')){
+        let numOfPage = $(el).text()
+        $("#listToDo li").hide()
+        let firstElementIndex = numOfPage === 1 ? numOfPage * (limitPerPage - 1) - (limitPerPage - 1) : numOfPage * limitPerPage  - limitPerPage;
+        for (let i = firstElementIndex; i <= (numOfPage * limitPerPage - 1); i++ ) {
+          $('#listToDo li:eq(' + i + ')').show()
+        }
+      }
     }
 
     $(document).on('click', '.current-page', function () {
@@ -291,6 +299,14 @@ $( document ).ready(function() {
     })
 
 
+
+  }
+
+
+
+  let focusOnNewPage = () => {
+    let lastElIndex = currentList.length
+    let numPage = Math.ceil(lastElIndex / limitPerPage)
 
   }
 
