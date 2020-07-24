@@ -1,5 +1,5 @@
 
-let a = Math.ceil(4.2)
+let a = Math.ceil(0)
 console.log(a)
 
 //

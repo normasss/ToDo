@@ -5,6 +5,7 @@ $( document ).ready(function() {
   let arrOfItems = [];
   let currentTab = 'all';
   const enterCode = 13;
+  let currentList = [];
 
    $('#add-btn').on('click', function () {
     let itemList = {
@@ -32,11 +33,11 @@ $( document ).ready(function() {
       arrOfItems.push(itemList)
       $('#text-field').val('')
       render()
-      //pageAddFunction()
-      //renderPages()
       pagesFunction()
+
     }
   })
+
   const activeTab = function(str) {
     currentTab = str;
     render();
@@ -61,45 +62,32 @@ $( document ).ready(function() {
     competeTodo();
   });
 
+
   const todoTab = () => {
-    let currentList = [];
 
 
     switch (currentTab) {
       case 'active':
         currentList = arrOfItems.filter(item => item.copmleted === false);
+
         break;
       case 'completed':
         currentList = arrOfItems.filter(item => item.copmleted === true);
+
         break;
       default:
         currentList = arrOfItems;
+
         break;
     }
 
     return currentList;
   };
-  // const maxElementsOnPage = 5;
-  // let currentPage = 1;
-  // let pagination = (currentList) => {
-  // let lastPage = Math.ceil(currentList.length / maxElementsOnPage)
-  //   if (currentPage > maxElementsOnPage) {
-  //
-  //     lastPage = currentPage
-  //
-  //   }
-  //   $('#pages').html('')
-  //   currentPage = currentPage === 0 ? 1 : currentPage
-  //   for(i=0; i<lastPage+1; i++) {
-  //     const el = $(`<button>${i}</button>`)
-  //     $('#pages').append(el)
-  //   }
-  // }
 
 
   let render = () => {
     let currentList = todoTab();
-    //pagination(currentList)
+    pagesFunction()
     let textString = '';
     currentList.forEach(item => {
       textString += `<li id="${item.idOfItem}" >
@@ -124,6 +112,11 @@ $( document ).ready(function() {
           arrOfItems.splice(index, 1)
       }
     })
+    $("#pages").html('');
+    for (let i = 1; i < arrOfItems.length / 5 + 1; i++) {
+      let el = `<li class='current-page'><a href='#'> ${i} </a></li>`
+      $("#pages").append(el);
+    }
     render()
   })
 
@@ -171,6 +164,11 @@ $( document ).ready(function() {
         sortedArr = arrOfItems.filter(item => item.copmleted !== true)
       })
       arrOfItems = sortedArr
+      $("#pages").html('');
+      for (let i = 1; i < sortedArr.length / 5 + 1; i++) {
+        let el = `<li class='current-page'><a href='#'> ${i} </a></li>`
+        $("#pages").append(el);
+      }
       render()
     })
 
@@ -264,21 +262,17 @@ $( document ).ready(function() {
   //   $(this).addClass('active')
   // })
 
+
   let pagesFunction = () => {
-    let numberOfItems = arrOfItems.length;
+    let numberOfItems = currentList.length;
     let limitPerPage = 5;
     let totalPages = Math.ceil(numberOfItems / limitPerPage);
     let delitel = numberOfItems % limitPerPage;
-    // if (numberOfItems === limitPerPage + 1) {
-    //   //$("#pages").append("<li class='current-page '><a href='#'>" + 1 + "</a></li>")
-    // }
-      console.log('delitel' ,delitel)
-     if ( totalPages % limitPerPage === 0) {
-       let emptyString = ''
-      for (let i=1; i < totalPages+1; i++){
-        emptyString += `<li class='current-page'><a href='#'> ${i} </a></li>`
-      }
-       $("#pages").append(emptyString);
+
+    $("#pages").html('');
+    for (let i = 1; i < totalPages + 1; i++) {
+      let el = `<li class='current-page '><a href='#'> ${i} </a></li>`
+      $("#pages").append(el);
     }
 
     $(document).on('click', '.current-page', function () {
@@ -289,9 +283,6 @@ $( document ).ready(function() {
         let numOfPage = $(this).text()
         $("#listToDo li").hide()
         let firstElementIndex = numOfPage === 1 ? numOfPage * (limitPerPage - 1) - (limitPerPage - 1) : numOfPage * limitPerPage  - limitPerPage;
-        console.log(firstElementIndex)
-        //let firstElementIndex = numOfPage * (limitPerPage - 1) - (limitPerPage - 1)
-        //let firstElementIndex = numOfPage * limitPerPage  - limitPerPage
         for (let i = firstElementIndex; i <= (numOfPage * limitPerPage - 1); i++ ) {
           $('#listToDo li:eq(' + i + ')').show()
         }
@@ -302,6 +293,15 @@ $( document ).ready(function() {
 
 
   }
+
+
+
+
+  // $("#pages").html('');
+  // for (let i = 1; i < arrOfItems.length / 5 + 1; i++) {
+  //   let el = `<li class='current-page'><a href='#'> ${i} </a></li>`
+  //   $("#pages").append(el);
+  // }
 
 
 
@@ -332,4 +332,10 @@ $( document ).ready(function() {
 //}
 
   //arrOfItems.slice(item.idOfItem)
+
+
+
+
+
+
 }); // refers to document.ready
