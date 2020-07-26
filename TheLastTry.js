@@ -8,21 +8,26 @@ $( document ).ready(function() {
   let currentList = [];
 
    $('#add-btn').on('click', function () {
-    let itemList = {
-      textOfItem: $('#text-field').val().trim() ,
-      idOfItem: Math.random(),
-      copmleted: false,
-      onEdit: false
-    }
-    arrOfItems.forEach(item => item.onEdit = false)
-    arrOfItems.push(itemList)
-    $('#text-field').val('')
-    render()
-  })
+     if ($('#text-field').val().trim()) {
+       let itemList = {
+         textOfItem: $('#text-field').val().trim() ,
+         idOfItem: Math.random(),
+         copmleted: false,
+         onEdit: false
+       }
+       arrOfItems.forEach(item => item.onEdit = false)
+       arrOfItems.push(itemList)
+       $('#text-field').val('')
+       render()
+       console.log(1)
+     }
+     })
 
 
-  $('#text-field').on('keydown',function(event) {
-    if( Number(event.keyCode) === Number(enterCode)) {
+
+
+   $('#text-field').on('keydown',function(event) {
+    if( Number(event.keyCode) === Number(enterCode) && $('#text-field').val().trim()) {
       let itemList = {
         textOfItem: $('#text-field').val().trim() ,
         idOfItem: Math.random(),
@@ -33,8 +38,6 @@ $( document ).ready(function() {
       arrOfItems.push(itemList)
       $('#text-field').val('')
       render()
-      pagesFunction()
-      focusOnNewPage()
     }
   })
 
@@ -102,7 +105,12 @@ $( document ).ready(function() {
     $('.all-checked-checkboxes').html('Выполненных задач:' + сheckedItemsCount())
     $('.all-unchecked-сheckboxes').html('Невыполненных задач:' + uncheckedItemsCount())
     checkBoxFunction()
+    pagesFunction()
   }
+
+
+
+
 
   $(document).on('click','.delete-btn', function() {
     let deleteItem = $(this).parent().attr('id')
@@ -112,11 +120,6 @@ $( document ).ready(function() {
           arrOfItems.splice(index, 1)
       }
     })
-    $("#pages").html('');
-    for (let i = 1; i < arrOfItems.length / 5 + 1; i++) {
-      let el = `<li class='current-page'><a href='#'> ${i} </a></li>`
-      $("#pages").append(el);
-    }
     render()
   })
 
@@ -164,11 +167,6 @@ $( document ).ready(function() {
         sortedArr = arrOfItems.filter(item => item.copmleted !== true)
       })
       arrOfItems = sortedArr
-      $("#pages").html('');
-      for (let i = 1; i < sortedArr.length / 5 + 1; i++) {
-        let el = `<li class='current-page'><a href='#'> ${i} </a></li>`
-        $("#pages").append(el);
-      }
       render()
     })
 
@@ -201,91 +199,35 @@ $( document ).ready(function() {
     render()
   })
 
-  // let firstPage = 1;
-  // let secondPage = 2;
-  // let arrOfPages = [];
-  // let arrOfObjectOfPages = [];
-  // let pageAddFunction = () => {
-  //   let lengthOfArrOfItems = Number(arrOfItems.length);
-  //   let multiplicity = 10;
-  //   startSizeOfArrOfPages = []
-  //   let result =  Number(lengthOfArrOfItems) % Number(multiplicity);
-  //   if (lengthOfArrOfItems == 11) {
-  //     let newPage = {
-  //       numberOfPage: lengthOfArrOfItems / multiplicity,
-  //       id: Math.random()
-  //     }
-  //     arrOfPages.push(newPage.numberOfPage = firstPage)
-  //     arrOfObjectOfPages.push(newPage)
-  //     //renderPages()
-  //     //arrOfPages.push(newPage.numberOfPage = 2)
-  //     //arrOfObjectOfPages.push(newPage)
-  //     console.log(arrOfObjectOfPages)
-  //     let var1 = ''
-  //     arrOfPages.forEach(item => {
-  //       var1 =`<button id="${item.id}">${Math.floor(lengthOfArrOfItems / multiplicity)}</button>`
-  //     })
-  //     $('#pages').append(var1)
-  //     //renderPages()
-  //
-  //
-  //   } else if (result == 1 && lengthOfArrOfItems > 11){
-  //     let newPage = {
-  //       numberOfPage: Math.floor(lengthOfArrOfItems / multiplicity),
-  //       id: Math.random()
-  //     }
-  //     //let numOfPage = Math.floor(15.5)//(Number(lengthOfArrOfItems) / Number(multiplicity))
-  //     lengthOfArrOfItems += 9
-  //     //arrOfPages.push(numOfPage)
-  //     lengthOfArrOfItems -= 9
-  //     arrOfObjectOfPages.push(newPage)
-  //     //$('#pages').append($(`<button >${Math.floor(lengthOfArrOfItems / multiplicity)}</button>`))
-  //     arrOfPages.push(newPage.numberOfPage)
-  //     console.log(arrOfObjectOfPages)
-  //     console.log('arrOfPages', arrOfPages)
-  //     let var1 = ''
-  //     arrOfPages.forEach(item => {
-  //       var1 =`<button id="${item.id}">${Math.floor(lengthOfArrOfItems / multiplicity)}</button>`
-  //     })
-  //     $('#pages').append(var1)
-  //
-  //   } else if (arrOfPages.length == startSizeOfArrOfPages.length ) {
-  //
-  //     //renderPages()
-  //
-  //   }
-  //   }
 
-  // $(document).on('click', '.current-page', function () {
-  //   console.log(1)
-  //   $('#pages li').removeClass('active')
-  //   $(this).addClass('active')
-  // })
 
   let limitPerPage = 5;
   let pagesFunction = () => {
 
     let numberOfItems = currentList.length;
     let totalPages = Math.ceil(numberOfItems / limitPerPage);
-    let delitel = numberOfItems % limitPerPage;
 
     $("#pages").html('');
     for (let i = 1; i < totalPages + 1; i++) {
-      let el = `<li class='current-page '><a href='#'> ${i} </a></li>`
+      $('#pages li').removeClass('activate')
+      let el = `<li class='current-page activate'><a href='#'> ${i} </a></li>`
       $("#pages").append(el).addClass('active')
-      if ($('#pages').hasClass('active')){
+      if ($('#pages').hasClass('active')) {
         let numOfPage = $(el).text()
         $("#listToDo li").hide()
-        let firstElementIndex = numOfPage === 1 ? numOfPage * (limitPerPage - 1) - (limitPerPage - 1) : numOfPage * limitPerPage  - limitPerPage;
-        for (let i = firstElementIndex; i <= (numOfPage * limitPerPage - 1); i++ ) {
+        let firstElementIndex = numOfPage === 1 ? numOfPage * (limitPerPage - 1) - (limitPerPage - 1) : numOfPage * limitPerPage - limitPerPage;
+        for (let i = firstElementIndex; i <= (numOfPage * limitPerPage - 1); i++) {
           $('#listToDo li:eq(' + i + ')').show()
         }
       }
     }
+  };
+
+
 
     $(document).on('click', '.current-page', function () {
-      $('#pages li').removeClass('active')
-      $(this).addClass('active')
+      $('#pages li').removeClass('active').removeClass('activate')
+      $(this).addClass('active').addClass('activate')
 
       if ($(this).hasClass('active')){
         let numOfPage = $(this).text()
@@ -300,34 +242,6 @@ $( document ).ready(function() {
 
 
 
-  }
-
-
-
-  let focusOnNewPage = () => {
-    let lastElIndex = currentList.length
-    let numPage = Math.ceil(lastElIndex / limitPerPage)
-
-  }
-
-
-
-
-  // $("#pages").html('');
-  // for (let i = 1; i < arrOfItems.length / 5 + 1; i++) {
-  //   let el = `<li class='current-page'><a href='#'> ${i} </a></li>`
-  //   $("#pages").append(el);
-  // }
-
-
-
-  // let one = $("#listToDo").find(`li`).show(arrOfItems.splice(limitPerPage - 1))
-  // $("#pages").append("<li class='current-page active'><a href='javascript:void(0)'>" + 1 + "</a></li>");
-  //
-  //
-  // for (let i = 2; i <= totalPages; i++) {
-  //   $("#pages").append("<li class='current-page'><a href='javascript:void(0)'>" + i + "</a></li>");
-  // }
 
 
 
@@ -335,23 +249,13 @@ $( document ).ready(function() {
 
 
 
-    // let renderPages = () => {
-    // // let var1 = ''
-    // // let appendedValue = arrOfPages.forEach(item => var1 += $(`<button id="${item.id}">${item.numberOfPage}</button>`))
-    // //   $('#pages').append(appendedValue)
-    //   let var1 = ''
-    //   arrOfPages.forEach(item => {
-    //     var1 +=`<button id="${item.id}">${Math.floor(lengthOfArrOfItems / multiplicity)}</button>`
-    //   })
-    //   $('#pages').append(var1)
-    //   //$('#pages').append($(`<button >${Math.floor(lengthOfArrOfItems / multiplicity)}</button>`))
-//}
-
-  //arrOfItems.slice(item.idOfItem)
 
 
 
 
 
 
-}); // refers to document.ready
+
+
+
+  }); // refers to document.ready
